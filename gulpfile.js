@@ -30,7 +30,10 @@ gulp.task('styles',['clean-styles'],()=>{
   log('Compiling Less --> CSS');
   return gulp
             .src(config().less)
+            .pipe($.plumber())
             .pipe($.less())
+            //Manual error handling/logging
+            //.on('error',errorLogger())
             .pipe($.autoprefixer({browsers:['last 2 version','> 5%']}))
             .pipe(gulp.dest(config().temp));
 });
@@ -44,3 +47,13 @@ gulp.task('clean-styles',()=>{
   let files = config().temp + '**/*.css';
   return clean(files);
 });
+
+gulp.task('less-watcher',()=>{
+  gulp.watch([config().less],['styles']);
+});
+
+const errorLogger = (error)=>{
+  log('*** ERROR ***');
+  log(error);
+  log('-----------------------');
+};

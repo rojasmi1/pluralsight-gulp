@@ -1,7 +1,7 @@
 module.exports = ()=>{
   let client = './src/client/';
   let config = {
-    temp:'./.temp',
+    temp:'./.temp/',
     /***********
     * File paths
     ***********/
