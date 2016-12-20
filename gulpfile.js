@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const args = require('yargs').argv;
 let $ = require('gulp-load-plugins')({lazy: true});
 const config = require('./gulp.config');
+const del = require('del');
 
 const log = (msg)=>{
   if(typeof(msg) === 'object'){
@@ -23,4 +24,23 @@ gulp.task('vet',()=>{
   .pipe($.jshint())
   .pipe($.jshint.reporter('jshint-stylish', {verbose:true}))
   .pipe($.jshint.reporter('fail'));
+});
+
+gulp.task('styles',['clean-styles'],()=>{
+  log('Compiling Less --> CSS');
+  return gulp
+            .src(config().less)
+            .pipe($.less())
+            .pipe($.autoprefixer({browsers:['last 2 version','> 5%']}))
+            .pipe(gulp.dest(config().temp));
+});
+
+const clean = (path) =>{
+  log('Cleaning: '+ $.util.colors.red(path));
+  return del(path);
+};
+
+gulp.task('clean-styles',()=>{
+  let files = config().temp + '**/*.css';
+  return clean(files);
 });

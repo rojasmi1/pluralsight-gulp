@@ -1,10 +1,15 @@
 module.exports = ()=>{
+  let client = './src/client/';
   let config = {
-    //all js to vet
+    temp:'./.temp',
+    /***********
+    * File paths
+    ***********/
     alljs:[
       './src/**/*.js',
       './*.js'
-    ]
+    ],
+    less: client + 'styles/styles.less'
   };
   return config;
 };
