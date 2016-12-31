@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const args = require('yargs').argv;
 let $ = require('gulp-load-plugins')({lazy: true});
-const config = require('./gulp.config');
+const config = require('./gulp.config')();
 const del = require('del');
 
 const log = (msg)=>{
@@ -18,7 +18,7 @@ const log = (msg)=>{
 
 gulp.task('vet',()=>{
   log('Analyzing source with JSHint and JSCS');
-  return gulp.src(config().alljs)
+  return gulp.src(config.alljs)
   .pipe($.if(args.verbose,$.print()))
   .pipe($.jscs())
   .pipe($.jshint())
@@ -29,13 +29,13 @@ gulp.task('vet',()=>{
 gulp.task('styles',['clean-styles'],()=>{
   log('Compiling Less --> CSS');
   return gulp
-            .src(config().less)
+            .src(config.less)
             .pipe($.plumber())
             .pipe($.less())
             //Manual error handling/logging
             //.on('error',errorLogger())
             .pipe($.autoprefixer({browsers:['last 2 version','> 5%']}))
-            .pipe(gulp.dest(config().temp));
+            .pipe(gulp.dest(config.temp));
 });
 
 const clean = (path) =>{
@@ -44,12 +44,29 @@ const clean = (path) =>{
 };
 
 gulp.task('clean-styles',()=>{
-  let files = config().temp + '**/*.css';
+  let files = config.temp + '**/*.css';
   return clean(files);
 });
 
 gulp.task('less-watcher',()=>{
-  gulp.watch([config().less],['styles']);
+  gulp.watch([config.less],['styles']);
+});
+
+gulp.task('wiredep',()=>{
+  let options = config.getWiredepDefaultOptions;
+  let wiredep = require('wiredep').stream;
+  return gulp
+      .src(config.index)
+      .pipe(wiredep(options))
+      .pipe($.inject(gulp.src(config.js)))
+      .pipe(gulp.dest(config.client));
+});
+
+gulp.task('inject',['wiredep','styles'],()=>{
+  return gulp
+      .src(config.index)
+      .pipe($.inject(gulp.src(config.css)))
+      .pipe(gulp.dest(config.client));
 });
 
 const errorLogger = (error)=>{
