@@ -1,9 +1,9 @@
 module.exports = ()=>{
   let client = './src/client/';
   let clientApp = client + 'app/';
+  let server = './src/server/'
   let temp = './.temp/'
   let config = {
-    temp:temp,
     /***********
     * File paths
     ***********/
@@ -20,6 +20,8 @@ module.exports = ()=>{
       '!' + clientApp + '**/*.spec.js'
     ],
     less: client + 'styles/styles.less',
+    server: server,
+    temp:temp,
 
     /***
     * Bower and NPM locations
@@ -28,7 +30,13 @@ module.exports = ()=>{
       json: require('./bower.json'),
       directory: './bower_components/',
       ignorePath: '../..'
-    }
+    },
+
+    /**
+    * Node settings
+    **/
+    defaultPort: 7203,
+    nodeServer: server + 'app.js'
   };
 
   const getWiredepDefaultOptions = ()=>{

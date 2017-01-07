@@ -3,6 +3,7 @@ const args = require('yargs').argv;
 let $ = require('gulp-load-plugins')({lazy: true});
 const config = require('./gulp.config')();
 const del = require('del');
+let port = process.env.PORT || config.defaultPort;
 
 const log = (msg)=>{
   if(typeof(msg) === 'object'){
@@ -67,6 +68,22 @@ gulp.task('inject',['wiredep','styles'],()=>{
       .src(config.index)
       .pipe($.inject(gulp.src(config.css)))
       .pipe(gulp.dest(config.client));
+});
+
+gulp.task('serve-dev',['inject'],()=>{
+
+let isDev = true;
+
+let nodeOptions = {
+  script: config.nodeServer,
+  delayTime: 1,
+  env:{
+    'PORT':port,
+    'NODE_ENV': isDev? 'dev':'build'
+  },
+  watch: [config.server]
+}
+  return $.nodemon(nodeOptions);
 });
 
 const errorLogger = (error)=>{

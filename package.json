@@ -34,6 +34,7 @@
     "gulp-jshint": "^2.0.4",
     "gulp-less": "^3.3.0",
     "gulp-load-plugins": "^1.4.0",
+    "gulp-nodemon": "^2.2.1",
     "gulp-plumber": "^1.1.0",
     "gulp-print": "^2.0.1",
     "gulp-util": "^3.0.7",
