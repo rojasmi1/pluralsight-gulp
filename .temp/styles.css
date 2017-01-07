@@ -776,11 +776,13 @@ form label {
   background-color: #52b9e9;
   border: 1px solid #52b9e9;
   color: #fff;
+  height: 25px;
 }
 .widget.wblue .widget-head {
   background-color: #1171a3;
   border: 1px solid #1171a3;
   color: #fff;
+  height: 25px;
 }
 .widget.wgreen .widget-head {
   background-color: #43c83c;

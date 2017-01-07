@@ -24,6 +24,11 @@ module.exports = ()=>{
     temp:temp,
 
     /***
+    * Browser sync
+    ***/
+    browserReloadDelay: 1000,
+    
+    /***
     * Bower and NPM locations
     ***/
     bower:{

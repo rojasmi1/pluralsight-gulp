@@ -1,3 +1,4 @@
+const browserSync = require('browser-sync');
 const gulp = require('gulp');
 const args = require('yargs').argv;
 let $ = require('gulp-load-plugins')({lazy: true});
@@ -83,8 +84,52 @@ let nodeOptions = {
   },
   watch: [config.server]
 }
-  return $.nodemon(nodeOptions);
+  return $.nodemon(nodeOptions)
+  .on('restart',(env)=>{
+    log('*** Server restarted ***');
+    log('Files changed on restart: '+env);
+    setTimeout(()=>{
+      browserSync.notify('Reloading now ...');
+      browserSync.reload({stream:false});
+    }, config.browserReloadDelay);
+  }).on('start',()=>{
+    log('*** Server started ***');
+    startBrowserSync();
+  });
 });
+
+const startBrowserSync = () =>{
+  if(args.nosync || browserSync.active){
+    return;
+  }
+
+  log('Starting browser-synx on port '+ port);
+
+  gulp.watch([config.less],['styles']);
+
+  let options = {
+    proxy: 'localhost:'+ port,
+    port: 3000,
+    files: [
+            config.client + '**/*.*',
+            '!' + config.less,
+            config.temp + '**/*.css'
+          ],
+    gostMode: {
+      clicks: true,
+      location: true,
+      forms: true,
+      scroll: true
+    },
+    injectChanges: true,
+    logFileChanges: true,
+    logLevel: 'debug',
+    logPrefix: 'gulp-patterns',
+    reloadDelay: 0
+  };
+
+  browserSync(options);
+}
 
 const errorLogger = (error)=>{
   log('*** ERROR ***');
