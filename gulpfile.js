@@ -82,8 +82,30 @@ gulp.task('clean-images',(done)=>{
   return clean(config.build + 'images/**/*.*',done);
 });
 
+gulp.task('clean-code',(done)=>{
+  let files = [].concat(
+                config.temp +'**/*.js',
+                config.build + '**/*.html',
+                config.build + 'js/*.js');
+  return clean(files,done);
+});
+
 gulp.task('less-watcher',()=>{
   gulp.watch([config.less],['styles']);
+});
+
+gulp.task('templatecache',['clean-code'],()=>{
+  log('Creating AngujarJS $templateCache');
+
+  return gulp
+              .src(config.htmltemplates)
+              .pipe($.minifyHtml({empty: true}))
+              .pipe($.angularTemplatecache(
+                            config.templateCache.file,
+                            config.templateCache.options
+                            ))
+              .pipe(gulp.dest(config.temp))
+
 });
 
 gulp.task('wiredep',()=>{

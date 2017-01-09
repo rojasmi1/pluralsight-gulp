@@ -16,6 +16,7 @@ module.exports = ()=>{
     css: temp + 'styles.css',
     fonts:'./bower_components/font-awesome/fonts/**/*.*',
     images:client + 'images/**/*.*',
+    htmltemplates: clientApp + '**/*.html',
     index:client + 'index.html',
     js: [
       clientApp + '**/*.module.js',
@@ -30,6 +31,18 @@ module.exports = ()=>{
     * Browser sync
     ***/
     browserReloadDelay: 1000,
+
+    /***
+    * Template cache
+    ***/
+    templateCache: {
+      file: 'template.js',
+      options:{
+        module: 'app.core',
+        standAlone: false,
+        root: 'app/'
+      }
+    },
 
     /***
     * Bower and NPM locations
