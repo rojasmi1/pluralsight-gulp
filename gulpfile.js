@@ -18,6 +18,9 @@ const log = (msg)=>{
   }
 };
 
+gulp.task('help', $.taskListing);
+gulp.task('default',['help']);
+
 gulp.task('vet',()=>{
   log('Analyzing source with JSHint and JSCS');
   return gulp.src(config.alljs)
@@ -40,14 +43,43 @@ gulp.task('styles',['clean-styles'],()=>{
             .pipe(gulp.dest(config.temp));
 });
 
+gulp.task('fonts',()=>{
+  log('Copying our fonts');
+
+  return gulp.src(config.fonts)
+             .pipe(gulp.dest(config.build + 'fonts'));
+});
+
+gulp.task('images',()=>{
+  log('Copying and compressing the images');
+
+  return gulp.src(config.images)
+             .pipe($.imagemin({optimizationLevel: 4}))
+             .pipe(gulp.dest(config.build + 'images'));
+
+});
+
 const clean = (path) =>{
   log('Cleaning: '+ $.util.colors.red(path));
   return del(path);
 };
 
-gulp.task('clean-styles',()=>{
-  let files = config.temp + '**/*.css';
-  return clean(files);
+gulp.task('clean',(done)=>{
+  let delconfig = [].concat(config.build, config.temp);
+  log('Cleaning: ' + $.util.colors.blue(delconfig));
+  del(delconfig,done);
+});
+
+gulp.task('clean-styles',(done)=>{
+  return clean(config.temp + '**/*.css',done);
+});
+
+gulp.task('clean-fonts',(done)=>{
+  return clean(config.build + 'fonts/**/*.*',done);
+});
+
+gulp.task('clean-images',(done)=>{
+  return clean(config.build + 'images/**/*.*',done);
 });
 
 gulp.task('less-watcher',()=>{
