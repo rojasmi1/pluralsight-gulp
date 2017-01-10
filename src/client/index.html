@@ -12,14 +12,18 @@
         .ng-hide { display: none!important; }
     </style>
 
+    <!-- build:css({./,./src/client}) css/lib.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="../../bower_components/toastr/toastr.css" />
     <!-- endbower -->
+    <!-- endbuild -->
 
+    <!-- build:css css/app.css -->
     <!-- inject:css -->
     <link rel="stylesheet" href="/.temp/styles.css">
     <!-- endinject -->
+    <!-- endbuild -->
 </head>
 <body>
     <div>
@@ -36,6 +40,7 @@
         </div>
     </div>
 
+    <!-- build:js({./,./src/client}) js/lib.js -->
     <!-- bower:js -->
     <script src="../../bower_components/jquery/dist/jquery.js"></script>
     <script src="../../bower_components/angular/angular.js"></script>
@@ -47,8 +52,9 @@
     <script src="../../bower_components/toastr/toastr.js"></script>
     <script src="../../bower_components/angular-animate/angular-animate.js"></script>
     <!-- endbower -->
+    <!-- endbuild -->
 
-
+    <!-- build:js js/app.js -->
     <!-- inject:js -->
     <script src="/src/client/app/app.module.js"></script>
     <script src="/src/client/app/core/core.module.js"></script>
@@ -78,6 +84,10 @@
     <script src="/src/client/app/blocks/logger/logger.js"></script>
     <script src="/src/client/app/blocks/router/router-helper.provider.js"></script>
     <!-- endinject -->
+
+    <!-- inject:templates:js -->
+    <!-- endinject -->
+    <!-- endbuild -->
 
 </body>
 </html>

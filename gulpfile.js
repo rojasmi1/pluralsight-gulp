@@ -118,42 +118,60 @@ gulp.task('wiredep',()=>{
       .pipe(gulp.dest(config.client));
 });
 
-gulp.task('inject',['wiredep','styles'],()=>{
+gulp.task('inject',['wiredep','styles','templatecache'],()=>{
   return gulp
       .src(config.index)
       .pipe($.inject(gulp.src(config.css)))
       .pipe(gulp.dest(config.client));
 });
 
-gulp.task('serve-dev',['inject'],()=>{
+gulp.task('optimize',['inject'],()=>{
+  log('Optimizing the javascript, css, html');
+  let templateCache = config.temp + config.templateCache.file;
 
-let isDev = true;
-
-let nodeOptions = {
-  script: config.nodeServer,
-  delayTime: 1,
-  env:{
-    'PORT':port,
-    'NODE_ENV': isDev? 'dev':'build'
-  },
-  watch: [config.server]
-}
-  return $.nodemon(nodeOptions)
-  .on('restart',(env)=>{
-    log('*** Server restarted ***');
-    log('Files changed on restart: '+env);
-    setTimeout(()=>{
-      browserSync.notify('Reloading now ...');
-      browserSync.reload({stream:false});
-    }, config.browserReloadDelay);
-  }).on('start',()=>{
-    log('*** Server started ***');
-    startBrowserSync();
-  });
+  return gulp
+         .src(config.index)
+         .pipe($.plumber())
+         .pipe($.inject(gulp.src(templateCache,{read:false}),{starttag: '<!-- inject:templates:js -->'}))
+         .pipe($.useref({searchPath:'./'}))
+         .pipe(gulp.dest(config.build));
 });
 
-const startBrowserSync = () =>{
-  if(args.nosync || browserSync.active){
+gulp.task('serve-build',['optimize']);
+  serve(false);
+gulp.task('serve-dev',['inject'],()=>{
+  serve(true);
+});
+
+//////// Functions //////////
+
+const serve = (isDev)=>{
+
+  let nodeOptions = {
+    script: config.nodeServer,
+    delayTime: 1,
+    env:{
+      'PORT':port,
+      'NODE_ENV': isDev? 'dev':'build'
+    },
+    watch: [config.server]
+  }
+    return $.nodemon(nodeOptions)
+    .on('restart',(env)=>{
+      log('*** Server restarted ***');
+      log('Files changed on restart: '+env);
+      setTimeout(()=>{
+        browserSync.notify('Reloading now ...');
+        browserSync.reload({stream:false});
+      }, config.browserReloadDelay);
+    }).on('start',()=>{
+      log('*** Server started ***');
+      startBrowserSync(isDev);
+    });
+}
+
+const startBrowserSync = (isDev) =>{
+  if(args.nosync || browserSync.active || !isDev){
     return;
   }
 
