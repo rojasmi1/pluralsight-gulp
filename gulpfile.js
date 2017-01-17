@@ -134,6 +134,8 @@ gulp.task('optimize',['inject'],()=>{
          .pipe($.plumber())
          .pipe($.inject(gulp.src(templateCache,{read:false}),{starttag: '<!-- inject:templates:js -->'}))
          .pipe($.useref({searchPath:'./'}))
+         .pipe($.if('*.css',$.csso()))
+         .pipe($.if('*.js',$.uglify()))
          .pipe(gulp.dest(config.build));
 });
 
