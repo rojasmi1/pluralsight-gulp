@@ -16,6 +16,7 @@ module.exports = ()=>{
     css: temp + 'styles.css',
     fonts:'./bower_components/font-awesome/fonts/**/*.*',
     images:client + 'images/**/*.*',
+    html: clientApp + clientApp + '**/*.html',
     htmltemplates: clientApp + '**/*.html',
     index:client + 'index.html',
     js: [

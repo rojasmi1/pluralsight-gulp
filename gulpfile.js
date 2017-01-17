@@ -137,8 +137,10 @@ gulp.task('optimize',['inject'],()=>{
          .pipe(gulp.dest(config.build));
 });
 
-gulp.task('serve-build',['optimize']);
+gulp.task('serve-build',['optimize'],()=>{
   serve(false);
+});
+
 gulp.task('serve-dev',['inject'],()=>{
   serve(true);
 });
@@ -171,22 +173,31 @@ const serve = (isDev)=>{
 }
 
 const startBrowserSync = (isDev) =>{
-  if(args.nosync || browserSync.active || !isDev){
+  if(args.nosync || browserSync.active){
     return;
   }
 
   log('Starting browser-synx on port '+ port);
 
-  gulp.watch([config.less],['styles']);
+  if (isDev) {
+    gulp.watch([config.less],['styles']).on('change',(event)=>{
+      changeEvent(event);
+    });
+  }else{
+    gulp.watch([config.less, config.js, config.html],['optimize', browserSync.reload]).on('change',(event)=>{
+      changeEvent(event);
+    });
+  }
+
 
   let options = {
     proxy: 'localhost:'+ port,
     port: 3000,
-    files: [
+    files: isDev?[
             config.client + '**/*.*',
             '!' + config.less,
             config.temp + '**/*.css'
-          ],
+          ]:[],
     gostMode: {
       clicks: true,
       location: true,
