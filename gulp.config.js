@@ -34,6 +34,14 @@ module.exports = ()=>{
     browserReloadDelay: 1000,
 
     /***
+    * Optimized files
+    ***/
+    optimized: {
+      app: 'app.js',
+      lib: 'lib.js'
+    },
+  
+    /***
     * Template cache
     ***/
     templateCache: {

@@ -135,8 +135,12 @@ gulp.task('optimize',['inject'],()=>{
          .pipe($.inject(gulp.src(templateCache,{read:false}),{starttag: '<!-- inject:templates:js -->'}))
          .pipe($.useref({searchPath:'./'}))
          .pipe($.if('*.css',$.csso()))
-         .pipe($.if('*.js',$.uglify()))
-         .pipe(gulp.dest(config.build));
+         .pipe($.if(config.optimized.app,$.ngAnnotate({add: true})))
+         .pipe($.if(config.optimized.lib,$.uglify()))
+         .pipe($.rev())
+         .pipe($.revReplace())
+         .pipe(gulp.dest(config.build))
+         .pipe($.rev.manifest());
 });
 
 gulp.task('serve-build',['optimize'],()=>{
