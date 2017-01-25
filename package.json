@@ -1,6 +1,6 @@
 {
   "name": "Pluralsight-Gulp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Starter Code for Pluralsight Course JavaScript Build Automation with Gulp.js",
   "authors": [
     "John Papa"
@@ -30,6 +30,7 @@
     "gulp": "^3.9.1",
     "gulp-angular-templatecache": "^2.0.0",
     "gulp-autoprefixer": "^3.1.1",
+    "gulp-bump": "^2.5.1",
     "gulp-csso": "^2.0.0",
     "gulp-filter": "^5.0.0",
     "gulp-if": "^2.0.2",

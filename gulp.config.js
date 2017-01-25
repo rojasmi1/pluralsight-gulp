@@ -2,6 +2,7 @@ module.exports = ()=>{
   let client = './src/client/';
   let clientApp = client + 'app/';
   let server = './src/server/'
+  let root = './';
   let temp = './.temp/'
   let config = {
     /***********
@@ -27,6 +28,7 @@ module.exports = ()=>{
     less: client + 'styles/styles.less',
     server: server,
     temp:temp,
+    root:root,
 
     /***
     * Browser sync
@@ -61,6 +63,10 @@ module.exports = ()=>{
       directory: './bower_components/',
       ignorePath: '../..'
     },
+    packages : [
+      './package.json',
+      './bower.json'
+    ],
 
     /**
     * Node settings
