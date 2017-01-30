@@ -104,7 +104,7 @@ gulp.task('templatecache',['clean-code'],()=>{
                             config.templateCache.file,
                             config.templateCache.options
                             ))
-              .pipe(gulp.dest(config.temp))
+              .pipe(gulp.dest(config.temp));
 
 });
 
@@ -179,9 +179,12 @@ gulp.task('serve-dev',['inject'],()=>{
   serve(true);
 });
 
+gulp.task('test',['vet','templatecache'],(done)=>{
+  startTests(true/*singleRun*/,done);
+});
 //////// Functions //////////
 
-const serve = (isDev)=>{
+function serve(isDev){
 
   let nodeOptions = {
     script: config.nodeServer,
@@ -191,7 +194,7 @@ const serve = (isDev)=>{
       'NODE_ENV': isDev? 'dev':'build'
     },
     watch: [config.server]
-  }
+  };
     return $.nodemon(nodeOptions)
     .on('restart',(env)=>{
       log('*** Server restarted ***');
@@ -206,7 +209,7 @@ const serve = (isDev)=>{
     });
 }
 
-const startBrowserSync = (isDev) =>{
+function startBrowserSync(isDev) {
   if(args.nosync || browserSync.active){
     return;
   }
@@ -248,8 +251,38 @@ const startBrowserSync = (isDev) =>{
   browserSync(options);
 }
 
-const errorLogger = (error)=>{
+
+function startTests(singleRun,done) {
+  let karma = require('karma').server;
+  let excludeFiles = [];
+  let serverSpecs = config.serverIntegrationSpecs;
+  excludeFiles = excludeFiles.concat(serverSpecs);
+
+  karma.start({configFile:__dirname + '/karma.conf.js',
+              singleRun:!!singleRun,
+              exclude:excludeFiles
+              },
+              karmaCompleted
+             );
+
+  function karmaCompleted(karmaResult) {
+    log('Karma completed');
+    if(karmaResult === 1){
+      done('Karma: tests failed with code ' + karmaResult);
+    }else{
+      done();
+    }
+  }
+}
+
+function errorLogger(error){
   log('*** ERROR ***');
   log(error);
   log('-----------------------');
-};
+}
+
+function changeEvent(event){
+  log('*** CHANGED ***');
+  log(event);
+  log('-----------------------');
+}

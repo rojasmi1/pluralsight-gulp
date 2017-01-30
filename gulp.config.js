@@ -1,9 +1,13 @@
 module.exports = ()=>{
   let client = './src/client/';
   let clientApp = client + 'app/';
-  let server = './src/server/'
+  let server = './src/server/';
   let root = './';
-  let temp = './.temp/'
+  let temp = './.temp/';
+  let report = './report/';
+  const wiredep = require('wiredep');
+  let bowerFiles = wiredep({devDependencies: true})['js'];
+
   let config = {
     /***********
     * File paths
@@ -28,6 +32,7 @@ module.exports = ()=>{
     less: client + 'styles/styles.less',
     server: server,
     temp:temp,
+    report:report,
     root:root,
 
     /***
@@ -42,7 +47,7 @@ module.exports = ()=>{
       app: 'app.js',
       lib: 'lib.js'
     },
-  
+
     /***
     * Template cache
     ***/
@@ -69,6 +74,12 @@ module.exports = ()=>{
     ],
 
     /**
+    * Karma and testing settigns
+    **/
+    specHelpers: [client + 'tests-helpers/*.js'],
+    serverIntegrationSpecs:[client + 'tests/server-integration/**/*.spec.js'],
+
+    /**
     * Node settings
     **/
     defaultPort: 7203,
@@ -84,6 +95,34 @@ module.exports = ()=>{
 
     return options;
   };
+
+  const getKarmaOptions = ()=>{
+    let options = {
+      files: [].concat(
+        bowerFiles,
+        config.specHelpers,
+        client + '**/*.module.js',
+        client + '**/*.js',
+        temp + config.templateCache.file,
+        config.serverIntegrationSpecs
+      ),
+      exclude: [],
+      coverage: {
+        dir: report + 'coverage',
+        reporters: [
+          {type: 'html', subdir: 'report-html'},
+          {type: 'lcov', subdir: 'report-lcov'},
+          {type: 'text-summary'}
+        ]
+      },
+      preprocessors: {}
+    };
+    options.preprocessors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
+
+    return options;
+  };
+
+  config.karma = getKarmaOptions();
 
   return config;
 };
