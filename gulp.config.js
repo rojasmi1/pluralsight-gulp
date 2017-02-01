@@ -76,7 +76,7 @@ module.exports = ()=>{
     /**
     * Karma and testing settigns
     **/
-    specHelpers: [client + 'tests-helpers/*.js'],
+    specHelpers: [client + 'test-helpers/*.js'],
     serverIntegrationSpecs:[client + 'tests/server-integration/**/*.spec.js'],
 
     /**

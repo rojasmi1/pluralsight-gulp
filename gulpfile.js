@@ -4,6 +4,7 @@ const args = require('yargs').argv;
 let $ = require('gulp-load-plugins')({lazy: true});
 const config = require('./gulp.config')();
 const del = require('del');
+const path = require('path');
 let port = process.env.PORT || config.defaultPort;
 
 const log = (msg)=>{
@@ -125,6 +126,19 @@ gulp.task('inject',['wiredep','styles','templatecache'],()=>{
       .pipe(gulp.dest(config.client));
 });
 
+gulp.task('build',['optimize','images','fonts'], ()=>{
+  log('Building everything');
+  
+  let msg = {
+    title: 'gulp build',
+    subtitle: 'Deployed to the build folder',
+    message: 'Running `gulp serve-build`'
+  };
+  del(config.temp);
+  log(msg);
+  notify(msg);
+});
+
 gulp.task('optimize',['inject'],()=>{
   log('Optimizing the javascript, css, html');
   let templateCache = config.temp + config.templateCache.file;
@@ -171,7 +185,7 @@ gulp.task('bump',()=>{
          .pipe(gulp.dest(config.root));
 });
 
-gulp.task('serve-build',['optimize'],()=>{
+gulp.task('serve-build',['build'],()=>{
   serve(false);
 });
 
@@ -181,6 +195,10 @@ gulp.task('serve-dev',['inject'],()=>{
 
 gulp.task('test',['vet','templatecache'],(done)=>{
   startTests(true/*singleRun*/,done);
+});
+
+gulp.task('autotest',['vet','templatecache'],(done)=>{
+  startTests(false/*singleRun*/,done);
 });
 //////// Functions //////////
 
@@ -262,7 +280,7 @@ function startTests(singleRun,done) {
               singleRun:!!singleRun,
               exclude:excludeFiles
               },
-              karmaCompleted
+              function(){karmaCompleted();}
              );
 
   function karmaCompleted(karmaResult) {
@@ -285,4 +303,16 @@ function changeEvent(event){
   log('*** CHANGED ***');
   log(event);
   log('-----------------------');
+}
+
+function notify(options){
+  let notifier = require('node-notifier');
+  let notifyOptions = {
+    sound: 'Bottle',
+    contentImage: path.join(__dirname,'gulp.png'),
+    icon: path.join(__dirname,'gulp.png')
+  };
+  Object.assign(notifyOptions,options);
+  notifier.notify(notifyOptions);
+  
 }

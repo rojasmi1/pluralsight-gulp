@@ -66,6 +66,7 @@
     "mocha": "^3.2.0",
     "mocha-clean": "^1.0.0",
     "ng-annotate": "^1.2.1",
+    "node-notifier": "^5.0.2",
     "phantomjs": "^2.1.7",
     "plumber": "^0.4.8",
     "sinon": "^1.17.7",
